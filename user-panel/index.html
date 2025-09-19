@@ -87,21 +87,197 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-  // आपका कॉन्फ़िगरेशन कोड (यह बदला नहीं है)
-  const firebaseConfig = {
-    apiKey: "AIzaSyD1QEf2wmpnNH6JMeDQpKoExWlaJzM4VYs",
-    authDomain: "my-shope-raman.firebaseapp.com",
-    // databaseURL को मैन्युअल रूप से जोड़ना होगा
-    databaseURL: "https://my-shope-raman-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "my-shope-raman",
-    storageBucket: "my-shope-raman.appspot.com",
-    messagingSenderId: "1058019322311",
-    appId: "1:1058019322311:web:240c7eeba4be628bc911e2"
-  };
+    // --- Global Variables ---
+    let menuItems = [];
+    let orders = [];
+    let cart = JSON.parse(localStorage.getItem('cart')) || []; // Cart can stay in localStorage
+    let userProfile = {};
+    const statuses = ["Placed", "Accepted", "Preparing", "On its way", "Delivered"];
 
-  // Firebase को शुरू करना
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+    // --- UI Functions ---
+    const showPage = pageId => {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === pageId));
+        if (pageId === 'cartPage') updateCartPage();
+    };
+
+    const getInitials = (name = '?') => (name.match(/\b\w/g) || []).slice(0, 2).join('').toUpperCase();
+
+    // --- Firebase Real-time Listeners (The "Magic") ---
+    // Listen for Menu Items and render them
+    database.ref('menuItems').on('value', snapshot => {
+        const data = snapshot.val();
+        // Firebase returns an object, we need an array. Filter out nulls if any.
+        menuItems = data ? Object.values(data).filter(item => item) : []; 
+        renderMenu();
+    });
+
+    // Listen for Shop Details
+    database.ref('shopInfo').on('value', snapshot => {
+        const data = snapshot.val();
+        if(!data) return;
+        document.querySelector('.shop-name').textContent = data.name;
+        document.querySelector('.logo-img').src = data.logoCircle;
+        // You can add more shop details here if needed
+    });
+
+    // Listen for the current user's Profile
+    database.ref('userProfile').on('value', snapshot => {
+        userProfile = snapshot.val() || {};
+        loadProfile();
+        updateCartPage(); // Update delivery info if profile is loaded
+    });
+
+    // Listen for Orders
+    database.ref('orders').on('value', snapshot => {
+        const data = snapshot.val();
+        orders = data ? Object.values(data) : [];
+        renderOrders();
+    });
+    
+    // --- Render Functions ---
+    const renderMenu = () => {
+        const foodGrid = document.querySelector('.food-grid');
+        foodGrid.innerHTML = menuItems.map(i => `
+            <div class="food-card">
+                <img src="${i.image}" class="food-img">
+                <div class="food-info">
+                    <h3 class="food-title">${i.name}</h3>
+                    <p class="food-desc">${i.desc}</p>
+                    <div class="food-footer">
+                        <div class="food-price">₹${i.price}</div>
+                        <button class="add-btn" onclick="addToCart(${i.id})">+</button>
+                    </div>
+                </div>
+            </div>`).join('');
+    };
+    
+    const renderOrders = () => {
+        const ordersList = document.querySelector('.orders-list');
+        if (orders.length === 0) {
+            ordersList.innerHTML = '<p>You have no orders yet.</p>';
+            return;
+        }
+        ordersList.innerHTML = orders.map(o => `
+            <div class="order-card">
+                <div class="order-header">
+                    <div>#${o.id.slice(-6)}</div>
+                    <div>${o.date}</div>
+                </div>
+                <div class="order-item-images">${o.items.map(i => `<img src="${i.image}" title="${i.quantity}x ${i.name}" class="order-item-img">`).join('')}</div>
+                <div class="order-status">
+                    <div class="progress-bar"><div class="progress-fill" style="width:${o.status * (100 / (statuses.length - 1))}%"></div></div>
+                    ${statuses.map((s, i) => `<div class="status-step ${o.status >= i ? 'active' : ''}">
+                        <div class="status-icon">${o.status >= i ? '✓' : ''}</div>
+                        <div class="status-name">${s}</div>
+                    </div>`).join('')}
+                </div>
+            </div>`).join('');
+    };
+
+    // --- Profile Management ---
+    const saveProfile = () => {
+        const profileData = {
+            name: document.getElementById('name').value, mobile: document.getElementById('mobile').value,
+            address: document.getElementById('address').value, pincode: document.getElementById('pincode').value,
+            dpUrl: document.getElementById('profileDpUrl').value
+        };
+        // Save to Firebase instead of localStorage
+        database.ref('userProfile').set(profileData).then(() => {
+            alert('Profile saved!');
+            loadProfile();
+        }).catch(error => console.error("Error saving profile: ", error));
+    };
+
+    const loadProfile = () => {
+        const profile = userProfile;
+        document.getElementById('profileDisplayCard').innerHTML = `...`; // Your existing HTML for profile display card
+        if (profile) { Object.keys(profile).forEach(key => { const el = document.getElementById(key); if (el) el.value = profile[key] }); }
+        toggleProfileEdit(!profile.name);
+    };
+
+    const toggleProfileEdit = isEditing => {
+        document.getElementById('profileDisplayCard').style.display = isEditing ? 'none' : 'block';
+        document.getElementById('profileForm').style.display = isEditing ? 'block' : 'none';
+    };
+
+    // --- Cart and Order Logic ---
+    const addToCart = id => {
+        const item = menuItems.find(m => m.id === id);
+        if (!item) return;
+        const cartItem = cart.find(c => c.id === id);
+        if (cartItem) {
+            cartItem.quantity++;
+        } else {
+            cart.push({ ...item, quantity: 1 });
+        }
+        updateCartCount();
+        localStorage.setItem('cart', JSON.stringify(cart)); // Save cart to local storage
+    };
+
+    const updateCartCount = () => {
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.querySelectorAll('.cart-count').forEach(e => e.textContent = count);
+    };
+    
+    const updateQuantity = (id, change) => {
+        const itemIndex = cart.findIndex(i => i.id === id);
+        if (itemIndex > -1) {
+            cart[itemIndex].quantity += change;
+            if (cart[itemIndex].quantity <= 0) {
+                cart.splice(itemIndex, 1);
+            }
+        }
+        updateCartPage();
+        updateCartCount();
+        localStorage.setItem('cart', JSON.stringify(cart));
+    };
+    
+    const updateCartPage = () => {
+        document.querySelector('.cart-items').innerHTML = cart.map(i => `...`).join('') || '<p>Your cart is empty.</p>'; // Your existing cart item HTML
+        const subtotal = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+        const fee = subtotal > 0 ? 30 : 0;
+        document.getElementById('subtotalEl').textContent = `₹${subtotal.toFixed(2)}`;
+        document.getElementById('deliveryFeeEl').textContent = `₹${fee.toFixed(2)}`;
+        document.getElementById('totalEl').textContent = `₹${(subtotal + fee).toFixed(2)}`;
+        if (userProfile.name) {
+            document.getElementById('checkoutName').value = userProfile.name;
+            document.getElementById('checkoutAddress').value = userProfile.address;
+        }
+    };
+
+    const confirmOrder = () => {
+        if (!cart.length) { alert('Your cart is empty.'); return; }
+        if (!userProfile.name) { alert('Please save your profile first.'); showPage('profilePage'); return; }
+        
+        const subtotal = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+        const orderId = `ORD${Date.now()}`;
+        const newOrder = {
+            id: orderId,
+            date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric'}),
+            status: 0, // 0: Placed
+            items: [...cart],
+            total: subtotal + (subtotal > 0 ? 30 : 0)
+        };
+        
+        // Save order to Firebase
+        database.ref('orders/' + orderId).set(newOrder).then(() => {
+            alert("Order placed successfully!");
+            cart = [];
+            localStorage.removeItem('cart');
+            updateCartCount();
+            showPage('ordersPage');
+        }).catch(error => console.error("Order failed: ", error));
+    };
+
+    // --- Initial Setup ---
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.nav-item').forEach(i => i.addEventListener('click', e => { e.preventDefault(); showPage(i.dataset.page) }));
+        updateCartCount();
+        // The rest of the data will be loaded by Firebase listeners automatically.
+    });
+
 </script>
 </body>
 </html>
