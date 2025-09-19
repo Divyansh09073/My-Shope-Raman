@@ -4,109 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raman Vada Pav</title>
-    <!-- CSS and Fonts (No changes here) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* All your existing CSS goes here. No changes. */
-        :root { --primary: #e23744; --secondary: #ff9f43; /* ... and so on */ }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #f4f4f4; color: var(--dark); padding-bottom: 70px; padding-top: 60px; }
-        /* Paste ALL your existing CSS styles here */
+        :root{--primary:#e23744;--secondary:#ff9f43;--light:#f9f9f9;--dark:#333;--gray:#777;--bg-light:#f4f7f9;--border-color:#e8e8e8}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+        body{background-color:#f4f4f4;padding-bottom:70px}
+        .container{padding:15px}
+        .page{display:none}.page.active{display:block;animation:fadeIn .4s}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        .section-title{font-size:1.5rem;font-weight:600;margin-bottom:20px}
+        .food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+        .food-card{background:white;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.05);overflow:hidden;display:flex;flex-direction:column}
+        .food-img{width:100%;height:180px;object-fit:cover}
+        .food-info{padding:15px;flex-grow:1;display:flex;flex-direction:column}
+        .food-title{font-size:1.1rem;font-weight:600}.food-desc{font-size:.9rem;color:var(--gray);margin:5px 0;flex-grow:1}
+        .food-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+        .food-price{font-size:1.2rem;font-weight:700;color:var(--primary)}
+        .add-btn{background:var(--primary);color:white;border:none;width:40px;height:40px;border-radius:50%;font-size:1.5rem;cursor:pointer}
+        nav{position:fixed;bottom:0;left:0;width:100%;background:white;box-shadow:0 -2px 10px rgba(0,0,0,.08);display:flex;justify-content:space-around;padding:10px 0}
+        .nav-item{text-decoration:none;color:var(--gray);text-align:center;position:relative}
+        .nav-item.active{color:var(--primary)}.nav-item i{font-size:1.5rem}.nav-item p{font-size:.8rem}
+        .cart-count{position:absolute;top:-5px;right:-10px;background:var(--secondary);color:white;width:20px;height:20px;border-radius:50%;font-size:.8rem;display:flex;justify-content:center;align-items:center;font-weight:600}
     </style>
 </head>
 <body>
-    <!-- All your existing HTML Body content goes here. No changes. -->
-    <header>
-        <div class="logo" id="shopLogo"><img src="" class="logo-img"><div class="shop-name">Raman Vada Pav</div></div>
-    </header>
     <div class="container">
-        <!-- All pages here -->
-        <section id="menuPage" class="page active"><h2 class="section-title">Our Menu</h2><div class="food-grid"></div></section>
-        <section id="ordersPage" class="page"><h2 class="section-title">My Orders</h2><div class="orders-list"></div></section>
-        <section id="cartPage" class="page"><!-- ... your cart html ... --></section>
-        <section id="profilePage" class="page"><!-- ... your profile html ... --></section>
-        <!-- ... and all other sections ... -->
+        <section id="menuPage" class="page active">
+            <h2 class="section-title">Our Menu</h2>
+            <div class="food-grid"></div>
+        </section>
+        <section id="ordersPage" class="page"></section>
+        <section id="cartPage" class="page"></section>
+        <section id="profilePage" class="page"></section>
     </div>
-    <nav><!-- ... your nav html ... --></nav>
+    <nav>
+        <a href="#" class="nav-item active" data-page="menuPage"><i class="fas fa-utensils"></i><p>Menu</p></a>
+        <a href="#" class="nav-item" data-page="ordersPage"><i class="fas fa-receipt"></i><p>Orders</p></a>
+        <a href="#" class="nav-item" data-page="cartPage"><i class="fas fa-shopping-cart"></i><p>Cart</p><div class="cart-count">0</div></a>
+        <a href="#" class="nav-item" data-page="profilePage"><i class="fas fa-user"></i><p>Profile</p></a>
+    </nav>
 
-    <!-- ========= START: FIREBASE INTEGRATION ========= -->
-    
-    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     
     <script>
-      // 1. PASTE YOUR FIREBASE CONFIG OBJECT HERE
       const firebaseConfig = {
-        apiKey: "AIzaSyD1QEf2wmpnNH6JMeDQpKoExWlaJzM4VYs",
-    authDomain: "my-shope-raman.firebaseapp.com",
-    projectId: "my-shope-raman",
-    storageBucket: "my-shope-raman.firebasestorage.app",
-    messagingSenderId: "1058019322311",
-    appId: "1:1058019322311:web:240c7eeba4be628bc911e2"
-  };
+          apiKey: "AIzaSyD1QEf2wmpnNH6JMeDQpKoExWlaJzM4VYs",
+          authDomain: "my-shope-raman.firebaseapp.com",
+          databaseURL: "https://my-shope-raman-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "my-shope-raman",
+          storageBucket: "my-shope-raman.appspot.com",
+          messagingSenderId: "1058019322311",
+          appId: "1:1058019322311:web:240c7eeba4be628bc911e2"
+      };
 
-      // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
     </script>
 
-    <!-- ========= END: FIREBASE INTEGRATION ========= -->
-
-
-    <!-- ========= START: NEW JAVASCRIPT LOGIC ========= -->
     <script>
-        // --- Global Variables ---
         let menuItems = [];
         let orders = [];
-        let cart = JSON.parse(localStorage.getItem('cart')) || []; // Cart stays in localStorage for simplicity
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let userProfile = {};
-        let shopInfo = {};
-        const statuses = ["Placed", "Accepted", "Preparing", "On its way", "Delivered"];
-
-        // --- UI Functions ---
-        const showPage=pageId=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(pageId).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.page===pageId));if(pageId==='cartPage')updateCartPage();};
-        const getInitials = (name = '?') => (name.match(/\b\w/g) || []).slice(0, 2).join('').toUpperCase();
         
-        // --- Firebase Real-time Listeners ---
+        const showPage = pageId => {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === pageId));
+        };
+
         database.ref('menuItems').on('value', snapshot => {
             const data = snapshot.val();
             menuItems = data ? Object.values(data).filter(item => item && item.available) : [];
             renderMenu();
         });
 
-        database.ref('shopInfo').on('value', snapshot => {
-            shopInfo = snapshot.val() || {};
-            document.querySelector('.shop-name').textContent = shopInfo.name || "Raman Vada Pav";
-            document.querySelector('.logo-img').src = shopInfo.logoCircle || "";
-            // Add more shop details rendering here if you need
-        });
-        
-        // --- Render Functions ---
         const renderMenu = () => {
             const foodGrid = document.querySelector('.food-grid');
-            if(!foodGrid) return;
+            if (!foodGrid) return;
             foodGrid.innerHTML = menuItems.map(i => `<div class="food-card"><img src="${i.image}" class="food-img"><div class="food-info"><h3 class="food-title">${i.name}</h3><p class="food-desc">${i.desc}</p><div class="food-footer"><div class="food-price">₹${i.price}</div><button class="add-btn" onclick="addToCart(${i.id})">+</button></div></div></div>`).join('');
         };
+
+        const addToCart = id => {
+            const itemInCart = cart.find(c => c.id === id);
+            const menuItem = menuItems.find(m => m.id === id);
+            if (!menuItem) return;
+            if (itemInCart) {
+                itemInCart.quantity++;
+            } else {
+                cart.push({ ...menuItem, quantity: 1 });
+            }
+            updateCartCount();
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${menuItem.name} added to cart!`);
+        };
+
+        const updateCartCount = () => {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.querySelectorAll('.cart-count').forEach(e => e.textContent = count);
+        };
         
-        // All other functions like saveProfile, loadProfile, addToCart, confirmOrder etc.
-        // need to be here, modified to use Firebase.
-        // For simplicity, I am providing a compact version of the logic.
-        // Please replace the script in your user panel with this.
-
-        const addToCart=id=>{const i=cart.find(c=>c.id===id);const m=menuItems.find(x=>x.id===id);if(!m)return;if(i)i.quantity++;else cart.push({...m,quantity:1});updateCartCount();localStorage.setItem('cart',JSON.stringify(cart))};
-        const updateCartCount=()=>{document.querySelectorAll('.cart-count').forEach(e=>e.textContent=cart.reduce((s,i)=>s+i.quantity,0))};
-        const confirmOrder=()=>{if(!cart.length){alert('Cart empty');return}if(!userProfile.name){alert('Please save profile');showPage('profilePage');return} const sub=cart.reduce((s,i)=>s+(i.price*i.quantity),0);const orderId=`ORD${Date.now()}`;const newOrder={id:orderId,date:new Date().toLocaleDateString('en-IN'),status:0,items:[...cart],total:sub+(sub>0?30:0),customerName:userProfile.name,customerAddress:userProfile.address};database.ref('orders/'+orderId).set(newOrder).then(()=>{alert("Order Placed!");cart=[];localStorage.removeItem('cart');updateCartCount();showPage('ordersPage')})};
-
-        // --- Initial Load ---
-        document.addEventListener('DOMContentLoaded', () => {
-             updateCartCount();
-             // All event listeners and initial calls
-             document.querySelectorAll('.nav-item').forEach(i=>i.addEventListener('click',e=>{e.preventDefault();showPage(i.dataset.page)}));
-             // Other initialization code...
-        });
+        document.querySelectorAll('.nav-item').forEach(i => i.addEventListener('click', e => { e.preventDefault(); showPage(i.dataset.page) }));
+        document.addEventListener('DOMContentLoaded', updateCartCount);
     </script>
-    <!-- ========= END: NEW JAVASCRIPT LOGIC ========= -->
 </body>
 </html>
