@@ -7,59 +7,59 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root{--primary:#e23744;--secondary:#ff9f43;--light:#f9f9f9;--dark:#333;--gray:#777;--success:#27ae60;--info:#2980b9;--danger:#c0392b;--bg-light:#f4f7f9;--border-color:#e8e8e8}
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-        body{background-color:var(--bg-light);display:flex;height:100vh;overflow:hidden}
-        #login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-light);display:flex;justify-content:center;align-items:center;z-index:1000}
-        .login-box{background:white;padding:40px;border-radius:12px;text-align:center;width:90%;max-width:360px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
-        .login-box h3{color:var(--primary);font-size:1.8rem;margin-bottom:20px}
-        .login-box input{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:8px;margin-bottom:15px}
-        .btn{padding:12px 25px;border:none;border-radius:8px;cursor:pointer;color:white;font-weight:600;font-size:1rem;transition:all .2s ease}
-        .btn:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.1)}
-        .btn-primary{background-color:var(--primary)}
-        .sidebar{width:250px;background:white;display:flex;flex-direction:column;height:100vh;position:fixed;z-index:100;box-shadow:2px 0 10px rgba(0,0,0,.05);transition:transform .3s ease-in-out}
-        .sidebar-header{padding:20px;text-align:center;border-bottom:1px solid var(--border-color)}
-        .sidebar-header h2{color:var(--primary)}
-        .sidebar-nav{list-style:none;padding:10px 0}
-        .nav-item a{display:flex;align-items:center;gap:15px;padding:15px 20px;color:var(--dark);text-decoration:none;border-left:4px solid transparent;transition:all .3s}
-        .nav-item a:hover,.nav-item a.active{background:#ffeef0;color:var(--primary);border-left-color:var(--primary);font-weight:600}
-        .nav-item a i{width:20px;text-align:center}
-        .main-container{flex-grow:1;margin-left:250px;display:none;flex-direction:column;height:100vh}
-        .main-header{background:white;padding:15px 25px;display:flex;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,.05);z-index:50}
-        #menu-toggle{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--dark);margin-right:15px}
-        #page-title{font-size:1.5rem;font-weight:600;color:var(--dark)}
-        .main-content{flex-grow:1;padding:25px;overflow-y:auto}
-        .page{display:none}.page.active{display:block;animation:fadeIn .4s ease-in-out}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        .card{background:white;padding:25px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.03);margin-bottom:25px}
-        .card-header{font-size:1.3rem;font-weight:600;color:var(--dark);margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--border-color)}
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
-        .stat-card{background:white;padding:20px;border-radius:10px;border:1px solid var(--border-color);text-align:center}
-        .stat-card i{font-size:1.8rem;color:var(--primary);margin-bottom:10px}
-        .stat-card h3{font-size:2rem;color:var(--dark)}
-        .stat-card p{color:var(--gray)}
-        .form-group{margin-bottom:20px}
-        .form-group label{display:block;margin-bottom:8px;font-weight:600}
-        .form-group input,.form-group textarea,.form-group select{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:8px;background:#fdfdfd}
-        .btn-success{background-color:var(--success)}.btn-secondary{background-color:var(--gray)}.btn-danger{background-color:var(--danger)}
-        .status-tag{padding:4px 10px;border-radius:20px;font-size:.8rem;font-weight:600;color:white;text-transform:uppercase}
-        .status-placed{background-color:var(--info)}.status-accepted{background-color:var(--secondary)}.status-preparing{background-color:#e67e22}.status-on-its-way{background-color:#8e44ad}.status-delivered{background-color:var(--success)}.status-instock{background-color:var(--success)}.status-outofstock{background-color:var(--danger)}
-        .empty-state{text-align:center;padding:40px}
-        .empty-state i{font-size:3rem;color:#ccc;margin-bottom:15px}
-        .empty-state p{font-size:1.1rem;color:var(--gray)}
-        #mobile-menu-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:99;display:none}
-        #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 25px;border-radius:8px;color:white;font-weight:600;z-index:2000;opacity:0;transition:opacity .3s,bottom .3s;pointer-events:none}
-        #toast.show{opacity:1;bottom:40px}
-        #toast.success{background-color:var(--success)}
-        #toast.danger{background-color:var(--danger)}
-        @media (max-width:768px){.sidebar{transform:translateX(-100%);z-index:1001}.sidebar.active{transform:translateX(0)}.main-container{margin-left:0}#menu-toggle{display:block}.main-content,.main-header{padding:15px}.card{padding:15px}#page-title,.card-header{font-size:1.2rem}}
+        :root { --primary: #e23744; --secondary: #ff9f43; --light: #f9f9f9; --dark: #333; --gray: #777; --success: #27ae60; --info: #2980b9; --danger: #c0392b; --bg-light: #f4f7f9; --border-color: #e8e8e8; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-light); display: flex; height: 100vh; overflow: hidden; }
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .login-box { background: white; padding: 40px; border-radius: 12px; text-align: center; width: 90%; max-width: 360px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .login-box h3 { color: var(--primary); font-size: 1.8rem; margin-bottom: 20px; }
+        .login-box input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; }
+        .btn { padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; color: white; font-weight: 600; font-size: 1rem; transition: all 0.2s ease; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn-primary { background-color: var(--primary); }
+        .sidebar { width: 250px; background: white; display: flex; flex-direction: column; height: 100vh; position: fixed; z-index: 100; box-shadow: 2px 0 10px rgba(0,0,0,0.05); transition: transform 0.3s ease-in-out; }
+        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .sidebar-header h2 { color: var(--primary); }
+        .sidebar-nav { list-style: none; padding: 10px 0; }
+        .nav-item a { display: flex; align-items: center; gap: 15px; padding: 15px 20px; color: var(--dark); text-decoration: none; border-left: 4px solid transparent; transition: all 0.3s; }
+        .nav-item a:hover, .nav-item a.active { background: #ffeef0; color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+        .nav-item a i { width: 20px; text-align: center; }
+        .main-container { flex-grow: 1; margin-left: 250px; display: none; flex-direction: column; height: 100vh; }
+        .main-header { background: white; padding: 15px 25px; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 50; }
+        #menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--dark); margin-right: 15px; }
+        #page-title { font-size: 1.5rem; font-weight: 600; color: var(--dark); }
+        .main-content { flex-grow: 1; padding: 25px; overflow-y: auto; }
+        .page { display: none; } .page.active { display: block; animation: fadeIn 0.4s ease-in-out; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 25px; }
+        .card-header { font-size: 1.3rem; font-weight: 600; color: var(--dark); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 10px; border: 1px solid var(--border-color); text-align: center;}
+        .stat-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 10px; } .stat-card h3 { font-size: 2rem; color: var(--dark); } .stat-card p { color: var(--gray); }
+        .form-group { margin-bottom: 20px; } .form-group label { display: block; margin-bottom: 8px; font-weight: 600; } .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: #fdfdfd; }
+        .btn-success { background-color: var(--success); } .btn-secondary { background-color: var(--gray); } .btn-danger { background-color: var(--danger); }
+        .status-tag { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: white; text-transform: uppercase; }
+        .status-placed { background-color: var(--info); } .status-accepted { background-color: var(--secondary); } .status-preparing { background-color: #e67e22; } .status-on-its-way { background-color: #8e44ad; } .status-delivered { background-color: var(--success); } .status-instock { background-color: var(--success); } .status-outofstock { background-color: var(--danger); }
+        .empty-state { text-align: center; padding: 40px; } .empty-state i { font-size: 3rem; color: #ccc; margin-bottom: 15px; } .empty-state p { font-size: 1.1rem; color: var(--gray); }
+        #mobile-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 99; display: none; }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 25px; border-radius: 8px; color: white; font-weight: 600; z-index: 2000; opacity: 0; transition: opacity .3s, bottom .3s; pointer-events: none; }
+        #toast.show { opacity: 1; bottom: 40px; } #toast.success { background-color: var(--success); } #toast.danger { background-color: var(--danger); }
+        @media (max-width: 768px) { .sidebar { transform: translateX(-100%); z-index: 1001; } .sidebar.active { transform: translateX(0); } .main-container { margin-left: 0; } #menu-toggle { display: block; } .main-content, .main-header { padding: 15px; } .card { padding: 15px; } #page-title, .card-header { font-size: 1.2rem; } }
     </style>
 </head>
 <body>
     <div id="login-overlay"><div class="login-box"><h3>Admin Login</h3><div class="form-group"><input type="text" id="username" placeholder="Username" value="admin"></div><div class="form-group"><input type="password" id="password" placeholder="Password" value="password"></div><button class="btn btn-primary" onclick="handleLogin()">Login</button></div></div>
     <div id="toast"></div>
     <div id="mobile-menu-overlay" onclick="toggleMenu()"></div>
-    <aside class="sidebar" id="sidebar" style="display:none;"></aside>
+    <aside class="sidebar" id="sidebar" style="display:none;">
+        <div class="sidebar-header"><h2>Raman Vada Pav</h2></div>
+        <ul class="sidebar-nav">
+            <li class="nav-item"><a href="#" data-page="dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="#" data-page="orders"><i class="fas fa-receipt"></i> Orders</a></li>
+            <li class="nav-item"><a href="#" data-page="menu"><i class="fas fa-utensils"></i> Menu</a></li>
+            <li class="nav-item"><a href="#" data-page="shop"><i class="fas fa-store"></i> Shop Settings</a></li>
+            <li class="nav-item"><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </aside>
     <div class="main-container">
         <header class="main-header"><button id="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button><h1 id="page-title">Dashboard</h1></header>
         <main class="main-content">
@@ -98,7 +98,7 @@
         
         const toggleMenu=()=>{document.getElementById('sidebar').classList.toggle('active');const o=document.getElementById('mobile-menu-overlay');o.style.display=(o.style.display==='block')?'none':'block'};
         const showPage=p=>{document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.getElementById(p).classList.add('active');document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.toggle('active',a.dataset.page===p));document.getElementById('page-title').textContent=document.querySelector(`.sidebar-nav a[data-page="${p}"]`).textContent;if(window.innerWidth<=768&&document.getElementById('sidebar').classList.contains('active')){toggleMenu()} switch(p){case'dashboard':renderDashboard();break;case'orders':renderOrders();break;case'menu':renderMenuPage();break;case'shop':renderShopSettingsPage();break}};
-        const renderPageStructure=()=>{document.getElementById('sidebar').innerHTML=`<div class="sidebar-header"><h2>Raman Vada Pav</h2></div><ul class="sidebar-nav"><li class="nav-item"><a href="#" data-page="dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li><li class="nav-item"><a href="#" data-page="orders"><i class="fas fa-receipt"></i> Orders</a></li><li class="nav-item"><a href="#" data-page="menu"><i class="fas fa-utensils"></i> Menu</a></li><li class="nav-item"><a href="#" data-page="shop"><i class="fas fa-store"></i> Shop Settings</a></li><li class="nav-item"><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li></ul>`;document.getElementById('dashboard').innerHTML=`<div class="stats-grid"></div>`;document.getElementById('orders').innerHTML=`<div class="card"><div class="card-header">New Orders</div><div id="new-order-list"></div></div><div class="card"><div class="card-header">Active & Past Orders</div><div id="active-order-list"></div></div>`;document.getElementById('menu').innerHTML=`<div class="card"><div class="card-header">Add / Edit Menu Item</div><form id="menu-item-form"></form></div><div class="card"><div class="card-header">Current Menu</div><div id="menu-list" class="stats-grid"></div></div>`;document.getElementById('shop').innerHTML=`<div class="card"><div class="card-header">Shop Information</div><form id="shop-info-form"></form></div><div class="card"><div class="card-header">Opening Hours</div><form id="opening-hours-form"></form><button class="btn btn-primary" onclick="saveOpeningHours()" style="margin-top:15px;">Save Hours</button></div>`;showPage('dashboard')};
+        const renderPageStructure=()=>{document.getElementById('dashboard').innerHTML=`<div class="stats-grid"></div>`;document.getElementById('orders').innerHTML=`<div class="card"><div class="card-header">New Orders</div><div id="new-order-list"></div></div><div class="card"><div class="card-header">Active & Past Orders</div><div id="active-order-list"></div></div>`;document.getElementById('menu').innerHTML=`<div class="card"><div class="card-header">Add / Edit Menu Item</div><form id="menu-item-form"></form></div><div class="card"><div class="card-header">Current Menu</div><div id="menu-list" class="stats-grid"></div></div>`;document.getElementById('shop').innerHTML=`<div class="card"><div class="card-header">Shop Information</div><form id="shop-info-form"></form></div><div class="card"><div class="card-header">Opening Hours</div><form id="opening-hours-form"></form><button class="btn btn-primary" onclick="saveOpeningHours()" style="margin-top:15px;">Save Hours</button></div>`;showPage('dashboard')};
         const renderDashboard=()=>{const n=allOrders.filter(o=>o.status===0).length;const o=allMenuItems.filter(i=>!i.available).length;const d=document.querySelector('#dashboard .stats-grid'); if(d)d.innerHTML=`<div class="stat-card"><i class="fas fa-receipt"></i><h3>${n}</h3><p>New Orders</p></div><div class="stat-card"><i class="fas fa-utensils"></i><h3>${allMenuItems.length}</h3><p>Total Menu Items</p></div><div class="stat-card"><i class="fas fa-box-open"></i><h3>${o}</h3><p>Items Out of Stock</p></div>`};
         const renderOrders=()=>{const s=["Placed","Accepted","Preparing","On its way","Delivered"];const c=["placed","accepted","preparing","on-its-way","delivered"];const n=allOrders.filter(o=>o.status===0);const t=allOrders.filter(o=>o.status>0);const o=d=>`<div class="card" style="margin-bottom:15px;border-left:5px solid var(--primary);"><div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border-color);padding-bottom:10px;margin-bottom:10px;"><div><b>#${d.id.slice(-6)}</b> | ${d.customerName||'Guest'}</div><span class="status-tag status-${c[d.status]}">${s[d.status]}</span></div>${d.items.map(i=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:5px;"><img src="${i.image||''}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;"><span>${i.quantity} x ${i.name}</span></div>`).join('')}<div class="form-group" style="margin-top:15px;margin-bottom:0;"><select onchange="updateOrderStatus('${d.id}',this.value)" style="padding:8px;border-radius:8px;border:1px solid var(--border-color);">${s.map((e,a)=>`<option value="${a}" ${d.status===a?'selected':''}>${e}</option>`).join('')}</select></div></div>`;const e=d=>`<div class="empty-state"><i class="fas fa-inbox"></i><p>${d}</p></div>`;document.getElementById('new-order-list').innerHTML=n.length?n.map(o).join(''):e('No new orders.');document.getElementById('active-order-list').innerHTML=t.length?t.map(o).join(''):e('No active or past orders.')};
         const renderMenuPage=()=>{document.getElementById('menu-item-form').innerHTML=`<input type="hidden" id="menu-item-id"><div class="form-group"><label>Name</label><input type="text" id="item-name" required></div><div class="form-group"><label>Description</label><textarea id="item-desc" rows="2" required></textarea></div><div class="form-group"><label>Price (₹)</label><input type="number" id="item-price" required></div><div class="form-group"><label>Image URL</label><input type="url" id="item-image" required></div><div class="form-group"><label>Availability</label><select id="item-available"><option value="true">In Stock</option><option value="false">Out of Stock</option></select></div><button type="submit" class="btn btn-success">Save Item</button> <button type="button" class="btn btn-secondary" onclick="clearMenuForm()">Cancel</button>`;renderMenu();document.getElementById('menu-item-form').addEventListener('submit',saveMenuItem)};
