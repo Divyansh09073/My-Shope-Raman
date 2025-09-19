@@ -82,5 +82,26 @@
         const toggleHoursChart=()=>{const chart=document.getElementById('fullHoursChart');const icon=document.getElementById('hoursToggleIcon');chart.style.display=chart.style.display==='none'?'block':'none';icon.classList.toggle('expanded')};
         document.addEventListener('DOMContentLoaded',()=>{document.querySelector('.food-grid').innerHTML=menuItems.map(i=>`<div class="food-card"><img src="${i.image}" class="food-img"><div class="food-info"><h3 class="food-title">${i.name}</h3><p class="food-desc">${i.desc}</p><div class="food-footer"><div class="food-price">₹${i.price}</div><button class="add-btn" onclick="addToCart(${i.id})">+</button></div></div></div>`).join('');loadProfile();renderOrders();document.querySelectorAll('.nav-item').forEach(i=>i.addEventListener('click',e=>{e.preventDefault();showPage(i.dataset.page)}));document.getElementById('shopLogo').addEventListener('click',()=>showPage('shopDetailsPage'))});
     </script>
+    <!-- Firebase की पुरानी, पर आसान वाली लाइब्रेरी -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+  // आपका कॉन्फ़िगरेशन कोड (यह बदला नहीं है)
+  const firebaseConfig = {
+    apiKey: "AIzaSyD1QEf2wmpnNH6JMeDQpKoExWlaJzM4VYs",
+    authDomain: "my-shope-raman.firebaseapp.com",
+    // databaseURL को मैन्युअल रूप से जोड़ना होगा
+    databaseURL: "https://my-shope-raman-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "my-shope-raman",
+    storageBucket: "my-shope-raman.appspot.com",
+    messagingSenderId: "1058019322311",
+    appId: "1:1058019322311:web:240c7eeba4be628bc911e2"
+  };
+
+  // Firebase को शुरू करना
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+</script>
 </body>
 </html>
