@@ -345,21 +345,143 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-  // आपका कॉन्फ़िगरेशन कोड (यह बदला नहीं है)
-  const firebaseConfig = {
-    apiKey: "AIzaSyD1QEf2wmpnNH6JMeDQpKoExWlaJzM4VYs",
-    authDomain: "my-shope-raman.firebaseapp.com",
-    // databaseURL को मैन्युअल रूप से जोड़ना होगा
-    databaseURL: "https://my-shope-raman-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "my-shope-raman",
-    storageBucket: "my-shope-raman.appspot.com",
-    messagingSenderId: "1058019322311",
-    appId: "1:1058019322311:web:240c7eeba4be628bc911e2"
-  };
+    document.addEventListener('DOMContentLoaded', () => {
+        if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
+            initApp();
+        }
+    });
 
-  // Firebase को शुरू करना
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+    // --- Global Variables ---
+    let allMenuItems = [];
+    let allOrders = [];
+    let shopInfo = {};
+
+    // --- Auth & Initializing ---
+    const handleLogin = () => {
+        if (document.getElementById('username').value === 'admin' && document.getElementById('password').value === 'password') {
+            sessionStorage.setItem('isAdminLoggedIn', 'true');
+            initApp();
+        } else { alert('Invalid credentials'); }
+    };
+
+    const handleLogout = () => { sessionStorage.removeItem('isAdminLoggedIn'); location.reload(); };
+    
+    const initApp = () => {
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('sidebar').style.display = 'flex';
+        document.querySelector('.main-container').style.display = 'flex';
+        
+        setupFirebaseListeners();
+        renderPageStructure();
+
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            if (link.dataset.page) {
+                link.addEventListener('click', (e) => { e.preventDefault(); showPage(link.dataset.page); });
+            }
+        });
+    };
+    
+    // --- Firebase Listeners ---
+    function setupFirebaseListeners() {
+        database.ref('menuItems').on('value', snapshot => {
+            const data = snapshot.val();
+            allMenuItems = data ? Object.values(data).filter(item => item) : [];
+            if(document.getElementById('menu-list')) renderMenu();
+            if(document.getElementById('stats-container')) renderDashboard();
+        });
+
+        database.ref('orders').on('value', snapshot => {
+            const data = snapshot.val();
+            allOrders = data ? Object.values(data).sort((a,b) => b.id.localeCompare(a.id)) : []; // Show newest first
+            if(document.getElementById('new-order-list')) renderOrders();
+            if(document.getElementById('stats-container')) renderDashboard();
+        });
+
+        database.ref('shopInfo').on('value', snapshot => {
+            shopInfo = snapshot.val() || {};
+            if(document.getElementById('shop-info-form')) renderShopSettingsPage();
+        });
+    }
+
+    // --- Page & UI Rendering ---
+    const showPage = (pageId) => { /* ... वैसा ही रहेगा ... */ };
+    const toggleMenu = () => { /* ... वैसा ही रहेगा ... */ };
+
+    const renderPageStructure = () => { // Renders the static HTML structure for each page
+        document.getElementById('dashboard').innerHTML = `<div id="stats-container" class="stats-grid"></div>`;
+        document.getElementById('orders').innerHTML = `<div class="card"><div class="card-header">New Orders</div><div id="new-order-list"></div></div><div class="card"><div class="card-header">Active & Past Orders</div><div id="active-order-list"></div></div>`;
+        document.getElementById('menu').innerHTML = `<div class="card"><div class="card-header">Add / Edit Menu Item</div><form id="menu-item-form"></form></div><div class="card"><div class="card-header">Current Menu</div><div id="menu-list" class="stats-grid"></div></div>`;
+        document.getElementById('shop').innerHTML = `<div class="card"><div class="card-header">Shop Information</div><form id="shop-info-form"></form></div><div class="card"><div class="card-header">Opening Hours</div><form id="opening-hours-form"></form><button class="btn btn-primary" onclick="saveOpeningHours()" style="margin-top:15px;">Save Hours</button></div>`;
+        
+        renderDashboard();
+        renderOrders();
+        renderMenuPage();
+        renderShopSettingsPage();
+    };
+
+    const renderDashboard = () => { /* ... वैसा ही रहेगा, allOrders और allMenuItems इस्तेमाल करें ... */ };
+    const renderOrders = () => { /* ... वैसा ही रहेगा, allOrders इस्तेमाल करें ... */ };
+    const renderMenu = () => { /* ... वैसा ही रहेगा, allMenuItems इस्तेमाल करें ... */ };
+    const renderMenuPage = () => {
+        document.getElementById('menu-item-form').innerHTML = `...`; // आपका मौजूदा फॉर्म HTML
+        renderMenu();
+        document.getElementById('menu-item-form').addEventListener('submit', saveMenuItem);
+    };
+    const renderShopSettingsPage = () => {
+        document.getElementById('shop-info-form').innerHTML = `...`; // आपका मौजूदा शॉप फॉर्म HTML
+        renderOpeningHoursForm();
+        document.getElementById('shop-info-form').addEventListener('submit', saveShopInfo);
+    };
+    const renderOpeningHoursForm = () => { /* ... वैसा ही रहेगा, shopInfo इस्तेमाल करें ... */ };
+
+    // --- Data Manipulation (Writing to Firebase) ---
+    const updateOrderStatus = (id, status) => {
+        database.ref('orders/' + id + '/status').set(parseInt(status));
+    };
+
+    const saveMenuItem = (e) => {
+        e.preventDefault();
+        const id = document.getElementById('menu-item-id').value;
+        const itemId = id ? parseInt(id) : Date.now();
+        const itemData = {
+            id: itemId, name: document.getElementById('item-name').value,
+            desc: document.getElementById('item-desc').value, price: parseFloat(document.getElementById('item-price').value),
+            image: document.getElementById('item-image').value, available: document.getElementById('item-available').value === 'true'
+        };
+        database.ref('menuItems/' + itemId).set(itemData).then(() => clearMenuForm());
+    };
+
+    const deleteMenuItem = (id) => {
+        if (confirm('Are you sure you want to delete this item?')) {
+            database.ref('menuItems/' + id).remove();
+        }
+    };
+
+    const saveShopInfo = (e) => {
+        e.preventDefault();
+        const info = {
+            name: document.getElementById('shop-name').value, slogan: document.getElementById('shop-slogan').value,
+            logoCircle: document.getElementById('shop-logo-circle').value, banner: document.getElementById('shop-banner').value,
+            address: document.getElementById('shop-address').value, mapUrl: document.getElementById('shop-map-url').value
+        };
+        database.ref('shopInfo').update(info).then(() => alert('Shop info saved!'));
+    };
+    
+    const saveOpeningHours = () => {
+        const hours = {};
+        const days = Object.keys(shopInfo.openingHours);
+        days.forEach(day => {
+            hours[day] = {
+                open: document.getElementById(`${day}-open`).value,
+                close: document.getElementById(`${day}-close`).value,
+                closed: document.getElementById(`${day}-closed`).checked
+            }
+        });
+        database.ref('shopInfo/openingHours').update(hours).then(() => alert('Opening hours saved!'));
+    };
+
+    const clearMenuForm = () => { /* ... वैसा ही रहेगा ... */ };
+    const editMenuItem = (id) => { /* ... वैसा ही रहेगा ... */ };
 </script>
 </body>
 </html>
