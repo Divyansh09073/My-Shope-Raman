@@ -4,51 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raman Vada Pav</title>
+    <!-- Your original CSS and Fonts are preserved -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root{--primary:#e23744;--secondary:#ff9f43;--light:#f9f9f9;--dark:#333;--gray:#777;--bg-light:#f4f7f9;--border-color:#e8e8e8}
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-        body{background-color:#f4f4f4;padding-bottom:70px}
-        .container{padding:15px}
-        .page{display:none}.page.active{display:block;animation:fadeIn .4s}
-        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-        .section-title{font-size:1.5rem;font-weight:600;margin-bottom:20px}
-        .food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-        .food-card{background:white;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.05);overflow:hidden;display:flex;flex-direction:column}
-        .food-img{width:100%;height:180px;object-fit:cover}
-        .food-info{padding:15px;flex-grow:1;display:flex;flex-direction:column}
-        .food-title{font-size:1.1rem;font-weight:600}.food-desc{font-size:.9rem;color:var(--gray);margin:5px 0;flex-grow:1}
-        .food-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-        .food-price{font-size:1.2rem;font-weight:700;color:var(--primary)}
-        .add-btn{background:var(--primary);color:white;border:none;width:40px;height:40px;border-radius:50%;font-size:1.5rem;cursor:pointer}
-        nav{position:fixed;bottom:0;left:0;width:100%;background:white;box-shadow:0 -2px 10px rgba(0,0,0,.08);display:flex;justify-content:space-around;padding:10px 0}
-        .nav-item{text-decoration:none;color:var(--gray);text-align:center;position:relative}
-        .nav-item.active{color:var(--primary)}.nav-item i{font-size:1.5rem}.nav-item p{font-size:.8rem}
-        .cart-count{position:absolute;top:-5px;right:-10px;background:var(--secondary);color:white;width:20px;height:20px;border-radius:50%;font-size:.8rem;display:flex;justify-content:center;align-items:center;font-weight:600}
+        :root { --primary: #e23744; --secondary: #ff9f43; --light: #f9f9f9; --dark: #333; --gray: #777; --success: #2ecc71; --out-of-stock: #d32f2f; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f4f4f4; color: var(--dark); padding-bottom: 70px; padding-top: 60px; }
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+        header { background-color: white; position: fixed; top: 0; left: 0; right: 0; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; cursor: pointer; } .logo-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; border: 2px solid var(--primary); } .shop-name { font-weight: 700; color: var(--primary); }
+        .page { display: none; padding: 20px 0; animation: fadeIn 0.3s ease; } .page.active { display: block; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--gray); font-size: 0.8rem; position:relative; } .nav-item.active { color: var(--primary); } .nav-item i { font-size: 1.2rem; margin-bottom: 4px; }
+        .cart-count { position:absolute; top:-5px; right: 10px; background:var(--secondary); color:white; width:20px; height:20px; border-radius:50%; font-size:.8rem; display:flex; justify-content:center; align-items:center; font-weight:600; }
+        .section-title { margin-bottom: 20px; font-size: 1.5rem; color: var(--dark); position: relative; padding-bottom: 10px; } .section-title::after { content: ''; position: absolute; bottom: 0; left: 0; width: 50px; height: 3px; background-color: var(--primary); }
+        .food-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; } .food-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); } .food-img { width: 100%; height: 180px; object-fit: cover; } .food-info { padding: 15px; } .food-title { font-weight: 600; margin-bottom: 8px; } .food-desc { color: var(--gray); font-size: 0.9rem; margin-bottom: 12px; } .food-footer { display: flex; justify-content: space-between; align-items: center; } .food-price { font-weight: 700; color: var(--primary); } .add-btn { width: 30px; height: 30px; border-radius: 50%; background: var(--primary); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .order-card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .order-item-images { display: flex; gap: 8px; margin: 10px 0; padding-bottom: 10px; border-bottom: 1px solid #eee; overflow-x: auto; } .order-item-img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+        .order-status { display: flex; justify-content: space-between; margin: 20px 0; position: relative; }
+        .status-step { flex: 1; display: flex; flex-direction: column; align-items: center; background: #fff; z-index: 1; }
+        .status-icon { width: 30px; height: 30px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; color: white; }
+        .status-step.active .status-icon { background: var(--success); }
+        .status-name { font-size: 0.7rem; text-align: center; }
+        .progress-bar { position: absolute; top: 15px; height: 2px; background: #ddd; left: 10%; right: 10%; z-index: 0; }
+        .progress-fill { height: 100%; background: var(--success); transition: width 0.5s ease; }
+        .profile-display-card, .profile-form, .policy-page { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .profile-header { display: flex; align-items: center; gap: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; margin-bottom: 15px; }
+        .profile-dp-container { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--primary); overflow: hidden; position: relative; flex-shrink: 0; }
+        .profile-dp { width: 100%; height: 100%; object-fit: cover; }
+        .initials-avatar { width: 100%; height: 100%; background-color: var(--secondary); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+        .profile-user-info { flex: 1; } .link-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; text-decoration: none; color: var(--dark); cursor: pointer; } .link-item:last-child { border: none; }
+        .link-content { display: flex; align-items: center; gap: 15px; }
+        .developer-details { display: flex; align-items: center; gap: 10px; } .developer-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; } .name-pink { color: #E91E63; } .name-green { color: #4CAF50; }
+        .form-group { margin-bottom: 20px; } .form-group label { display: block; margin-bottom: 8px; font-weight: 600; } .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; } .save-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        .cart-item { display: flex; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; } .cart-item:last-child { border-bottom: none; } .cart-item-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; margin-right: 15px; } .cart-item-info { flex: 1; } .cart-item-title { font-weight: 600; margin-bottom: 5px; } .cart-item-price { color: var(--primary); font-weight: 600; }
+        .quantity-control { display: flex; align-items: center; margin-top: 8px; } .quantity-btn { width: 25px; height: 25px; border-radius: 50%; background: #eee; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; } .quantity { margin: 0 10px; font-weight: 600; }
+        .cart-total, .cart-delivery { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 20px; }
+        .total-row { display: flex; justify-content: space-between; margin-bottom: 10px; } .grand-total { font-weight: 700; font-size: 1.2rem; color: var(--primary); margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ddd; }
+        .confirm-order-btn { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1.1rem; margin-top: 20px; }
+        .shop-details-page { position: relative; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .shop-info { display: flex; align-items: flex-start; margin-bottom: 15px; padding: 15px; background: var(--light); border-radius: 8px; }
+        .back-to-menu-top-right { position: absolute; top: 15px; right: 15px; background: var(--primary); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 10; display: flex; align-items: center; justify-content: center; }
+        .opening-hours-container { cursor: pointer; } .hours-toggle-icon { transition: transform 0.3s ease; } .hours-toggle-icon.expanded { transform: rotate(180deg); }
+        #fullHoursChart { display: none; }
+        .opening-hours-list li { display: flex; justify-content: space-between; padding: 8px 5px; border-bottom: 1px dashed #eee; font-size: 0.9rem; } .day { font-weight: 600; } .status-open { color: var(--success); font-weight: bold; } .status-closed { color: var(--out-of-stock); font-weight: bold; }
+        .policy-page .back-btn { margin-bottom: 20px; font-weight: bold; color: var(--primary); cursor:pointer; }
     </style>
 </head>
 <body>
+    <header>
+        <div class="logo" id="shopLogo">
+            <img src="" class="logo-img">
+            <div class="shop-name">Loading...</div>
+        </div>
+    </header>
     <div class="container">
-        <section id="menuPage" class="page active">
-            <h2 class="section-title">Our Menu</h2>
-            <div class="food-grid"></div>
-        </section>
-        <section id="ordersPage" class="page"></section>
-        <section id="cartPage" class="page"></section>
-        <section id="profilePage" class="page"></section>
+        <section id="menuPage" class="page active"><h2 class="section-title">Our Menu</h2><div class="food-grid"></div></section>
+        <section id="ordersPage" class="page"><h2 class="section-title">My Orders</h2><div class="orders-list"></div></section>
+        <section id="cartPage" class="page"><h2 class="section-title">My Cart</h2><div class="cart-items" style="background:white; padding: 15px; border-radius: 10px;"></div><div class="cart-total"><div class="total-row"><span>Subtotal</span><span id="subtotalEl">₹0.00</span></div><div class="total-row"><span>Delivery Fee</span><span id="deliveryFeeEl">₹0.00</span></div><div class="total-row grand-total"><span>Total</span><span id="totalEl">₹0.00</span></div></div><div class="cart-delivery"><div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 15px;"><h3 style="font-size:1.1rem;">Delivery Information</h3><button class="edit-btn" onclick="showPage('profilePage')" style="background:var(--success);color:white;border:none;padding:5px 15px;border-radius:20px;cursor:pointer;">Edit</button></div><input type="text" id="checkoutName" placeholder="Full Name" readonly style="width:100%;padding:12px;border:1px solid #ddd;border-radius:5px;margin-bottom:10px;background:#f9f9f9;"><input type="text" id="checkoutAddress" placeholder="Address" readonly style="width:100%;padding:12px;border:1px solid #ddd;border-radius:5px;background:#f9f9f9;"></div><button class="confirm-order-btn" onclick="confirmOrder()">Confirm Order</button></section>
+        <section id="profilePage" class="page"><h2 class="section-title">My Profile</h2><div id="profileDisplayCard" class="profile-display-card" style="display:none;"></div><div id="profileForm" class="profile-form" style="display:none;"><div class="form-group"><label for="name">Full Name</label><input type="text" id="name"></div><div class="form-group"><label for="mobile">Mobile Number</label><input type="tel" id="mobile"></div><div class="form-group"><label for="address">Address</label><input type="text" id="address"></div><div class="form-group"><label for="pincode">Pincode</label><input type="text" id="pincode"></div><div class="form-group"><label for="profileDpUrl">DP Image URL (Optional)</label><input type="url" id="profileDpUrl"></div><button class="save-btn" onclick="saveProfile()">Save Information</button></div></section>
+        <section id="shopDetailsPage" class="page"></section>
+        <section id="privacyPage" class="page policy-page"><a class="back-btn" onclick="showPage('profilePage')">&lt; Back to Profile</a><h2 class="section-title">Privacy Policy</h2><p>We collect your details solely for delivering your food orders. We do not share this information with third parties.</p></section>
+        <section id="termsPage" class="page policy-page"><a class="back-btn" onclick="showPage('profilePage')">&lt; Back to Profile</a><h2 class="section-title">Terms & Conditions</h2><p>All orders are subject to availability. Payments are processed upon order confirmation. All transactions are final.</p></section>
     </div>
-    <nav>
-        <a href="#" class="nav-item active" data-page="menuPage"><i class="fas fa-utensils"></i><p>Menu</p></a>
-        <a href="#" class="nav-item" data-page="ordersPage"><i class="fas fa-receipt"></i><p>Orders</p></a>
-        <a href="#" class="nav-item" data-page="cartPage"><i class="fas fa-shopping-cart"></i><p>Cart</p><div class="cart-count">0</div></a>
-        <a href="#" class="nav-item" data-page="profilePage"><i class="fas fa-user"></i><p>Profile</p></a>
-    </nav>
-
+    <nav><a href="#" class="nav-item active" data-page="menuPage"><i class="fas fa-home"></i><span>Menu</span></a><a href="#" class="nav-item" data-page="ordersPage"><i class="fas fa-receipt"></i><span>My Orders</span></a><a href="#" class="nav-item" data-page="cartPage"><i class="fas fa-shopping-cart"></i><span>Cart</span><span class="cart-count">0</span></a><a href="#" class="nav-item" data-page="profilePage"><i class="fas fa-user"></i><span>Profile</span></a></nav>
+    
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     
     <script>
+      // Your corrected Firebase Config
       const firebaseConfig = {
           apiKey: "AIzaSyD1QEf2wmpnNH6JMeDQpKoExWlaJzM4VYs",
           authDomain: "my-shope-raman.firebaseapp.com",
@@ -58,56 +86,128 @@
           messagingSenderId: "1058019322311",
           appId: "1:1058019322311:web:240c7eeba4be628bc911e2"
       };
-
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
     </script>
 
     <script>
+        // Global variables
         let menuItems = [];
         let orders = [];
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let userProfile = {};
-        
-        const showPage = pageId => {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === pageId));
-        };
+        let shopInfo = {};
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+        // --- Firebase Listeners (The Magic) ---
         database.ref('menuItems').on('value', snapshot => {
             const data = snapshot.val();
             menuItems = data ? Object.values(data).filter(item => item && item.available) : [];
             renderMenu();
         });
 
+        database.ref('orders').on('value', snapshot => {
+            const data = snapshot.val();
+            orders = data ? Object.values(data).sort((a,b) => b.id.localeCompare(a.id)) : [];
+            renderOrders();
+        });
+
+        database.ref('userProfile').on('value', snapshot => {
+            userProfile = snapshot.val() || {};
+            loadProfile();
+            updateCartPage();
+        });
+
+        database.ref('shopInfo').on('value', snapshot => {
+            shopInfo = snapshot.val() || {};
+            renderShopHeader();
+            renderShopDetailsPage();
+        });
+
+        // --- UI & Page Navigation ---
+        const showPage = pageId => {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page === pageId));
+            if (pageId === 'cartPage') updateCartPage();
+            if (pageId === 'profilePage') loadProfile();
+        };
+
+        const getInitials = (name = '?') => (name.match(/\b\w/g) || []).slice(0, 2).join('').toUpperCase();
+
+        // --- Rendering Functions ---
         const renderMenu = () => {
-            const foodGrid = document.querySelector('.food-grid');
-            if (!foodGrid) return;
-            foodGrid.innerHTML = menuItems.map(i => `<div class="food-card"><img src="${i.image}" class="food-img"><div class="food-info"><h3 class="food-title">${i.name}</h3><p class="food-desc">${i.desc}</p><div class="food-footer"><div class="food-price">₹${i.price}</div><button class="add-btn" onclick="addToCart(${i.id})">+</button></div></div></div>`).join('');
-        };
-
-        const addToCart = id => {
-            const itemInCart = cart.find(c => c.id === id);
-            const menuItem = menuItems.find(m => m.id === id);
-            if (!menuItem) return;
-            if (itemInCart) {
-                itemInCart.quantity++;
-            } else {
-                cart.push({ ...menuItem, quantity: 1 });
-            }
-            updateCartCount();
-            localStorage.setItem('cart', JSON.stringify(cart));
-            alert(`${menuItem.name} added to cart!`);
-        };
-
-        const updateCartCount = () => {
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.querySelectorAll('.cart-count').forEach(e => e.textContent = count);
+            document.querySelector('.food-grid').innerHTML = menuItems.map(i => `<div class="food-card"><img src="${i.image}" class="food-img"><div class="food-info"><h3 class="food-title">${i.name}</h3><p class="food-desc">${i.desc}</p><div class="food-footer"><div class="food-price">₹${i.price}</div><button class="add-btn" onclick="addToCart(${i.id})">+</button></div></div></div>`).join('');
         };
         
-        document.querySelectorAll('.nav-item').forEach(i => i.addEventListener('click', e => { e.preventDefault(); showPage(i.dataset.page) }));
-        document.addEventListener('DOMContentLoaded', updateCartCount);
+        const renderOrders = () => {
+            const statuses = ["Placed", "Accepted", "Preparing", "On its way", "Delivered"];
+            document.querySelector('.orders-list').innerHTML = orders.map(o => `<div class="order-card"><div class="order-header"><div>#${o.id.slice(-6)}</div><div>${o.date}</div></div><div class="order-item-images">${o.items.map(i => `<img src="${i.image}" title="${i.quantity}x ${i.name}" class="order-item-img">`).join('')}</div><div class="order-status"><div class="progress-bar"><div class="progress-fill" style="width:${o.status * (100 / (statuses.length - 1))}%"></div></div>${statuses.map((s, i) => `<div class="status-step ${o.status >= i ? 'active' : ''}"><div class="status-icon">${o.status >= i ? '✓' : ''}</div><div class="status-name">${s}</div></div>`).join('')}</div></div>`).join('') || '<p>You have no orders yet.</p>';
+        };
+
+        const renderShopHeader = () => {
+            document.querySelector('.shop-name').textContent = shopInfo.name || 'Loading...';
+            document.querySelector('.logo-img').src = shopInfo.logoCircle || '';
+        };
+
+        const renderShopDetailsPage = () => {
+             // This can be further improved to dynamically render hours from shopInfo
+            document.getElementById('shopDetailsPage').innerHTML = `<div class="shop-details-page"><button class="back-to-menu-top-right" onclick="showPage('menuPage')"><i class="fas fa-times"></i></button><h2 class="section-title">Shop Details</h2><img src="${shopInfo.banner}" style="width:100%;height:200px;object-fit:cover;border-radius:10px;margin-bottom:20px;"><h2 style="font-size:1.8rem;color:var(--primary);margin-bottom:10px;text-align:center;">${shopInfo.name}</h2><p style="text-align:center;font-family:'Dancing Script',cursive;font-size:1.4rem;margin-bottom:25px;">${shopInfo.slogan}</p><div class="shop-info"><i class="fas fa-map-marker-alt" style="margin-right:15px;color:var(--primary);margin-top:4px;"></i><div><div style="font-weight:600;margin-bottom:8px;">Address</div><a href="${shopInfo.mapUrl}" target="_blank" style="color:var(--dark); text-decoration: none; line-height: 1.4;">${shopInfo.address}</a></div></div></div>`;
+        };
+
+        // --- Profile Logic ---
+        const saveProfile = () => {
+            const profile = { name: document.getElementById('name').value, mobile: document.getElementById('mobile').value, address: document.getElementById('address').value, pincode: document.getElementById('pincode').value, dpUrl: document.getElementById('profileDpUrl').value };
+            database.ref('userProfile').set(profile).then(() => { alert('Profile saved!'); loadProfile(); });
+        };
+        const loadProfile = () => {
+            const profile = userProfile;
+            document.getElementById('profileDisplayCard').innerHTML = `<div class="profile-header"><div class="profile-dp-container"><img src="${profile?.dpUrl||''}" style="display:${profile?.dpUrl?'block':'none'}" class="profile-dp"><div class="initials-avatar" style="display:${!profile?.dpUrl?'flex':'none'}">${getInitials(profile?.name)}</div></div><div class="profile-user-info"><h4>${profile?.name||'Guest User'}</h4><p>${profile?.address||'No address'}</p></div><button onclick="toggleProfileEdit(true)" class="edit-btn" style="background:var(--light);border:1px solid #ddd;padding:8px 15px;border-radius:20px;">Edit</button></div><div class="profile-links"><div class="link-item" onclick="showPage('privacyPage')"><div class="link-content"><i class="fas fa-shield-alt"></i><span>Privacy Policy</span></div><i class="fas fa-chevron-right"></i></div><div class="link-item" onclick="showPage('termsPage')"><div class="link-content"><i class="fas fa-file-contract"></i><span>Terms & Conditions</span></div><i class="fas fa-chevron-right"></i></div><div class="link-item"><div class="link-content"><i class="fas fa-info-circle"></i><span>App Version</span></div><span>1.1</span></div><a href="https://whatsapp.com/channel/0029Vb0dS3e3bbV4T5EGDu1q" target="_blank" class="link-item"><div class="link-content"><i class="fas fa-code"></i><span>Developer</span></div><div class="developer-details"><img src="https://envs.sh/euz.jpg/IMG20250831172.jpg" class="developer-img"><span><span class="name-pink">Divyansh</span><span class="name-green">Deewana</span></span></div></a></div>`;
+            if (profile) { Object.keys(profile).forEach(key => { const el = document.getElementById(key); if (el) el.value = profile[key] }); }
+            toggleProfileEdit(!profile?.name);
+        };
+        const toggleProfileEdit = isEditing => {
+            document.getElementById('profileDisplayCard').style.display = isEditing ? 'none' : 'block';
+            document.getElementById('profileForm').style.display = isEditing ? 'block' : 'none';
+        };
+
+        // --- Cart & Order Logic ---
+        const addToCart = id => {
+            const item = menuItems.find(m => m.id === id); if (!item) return;
+            const cartItem = cart.find(c => c.id === id);
+            if (cartItem) { cartItem.quantity++; } else { cart.push({ ...item, quantity: 1 }); }
+            updateCartCount(); localStorage.setItem('cart', JSON.stringify(cart));
+        };
+        const updateCartCount = () => { document.querySelector('.cart-count').textContent = cart.reduce((s, i) => s + i.quantity, 0); };
+        const updateQuantity = (id, c) => {
+            const itemIndex = cart.findIndex(i => i.id === id);
+            if (itemIndex > -1) { cart[itemIndex].quantity += c; if (cart[itemIndex].quantity <= 0) { cart.splice(itemIndex, 1); } }
+            updateCartPage(); updateCartCount(); localStorage.setItem('cart', JSON.stringify(cart));
+        };
+        const updateCartPage = () => {
+            document.querySelector('.cart-items').innerHTML = cart.map(i => `<div class="cart-item"><img src="${i.image}" class="cart-item-img"><div class="cart-item-info"><div class="cart-item-title">${i.name}</div><div class="cart-item-price">₹${i.price*i.quantity}</div><div class="quantity-control"><button class="quantity-btn" onclick="updateQuantity(${i.id},-1)">-</button><span class="quantity">${i.quantity}</span><button class="quantity-btn" onclick="updateQuantity(${i.id},1)">+</button></div></div></div>`).join('') || '<p style="text-align:center;color:var(--gray);">Your cart is empty.</p>';
+            const subtotal = cart.reduce((s, i) => s + (i.price * i.quantity), 0), fee = subtotal > 0 ? 30 : 0;
+            document.getElementById('subtotalEl').textContent = `₹${subtotal.toFixed(2)}`; document.getElementById('deliveryFeeEl').textContent = `₹${fee.toFixed(2)}`; document.getElementById('totalEl').textContent = `₹${(subtotal + fee).toFixed(2)}`;
+            const p = userProfile;
+            if (p) { document.getElementById('checkoutName').value = p.name; document.getElementById('checkoutAddress').value = p.address; }
+        };
+        const confirmOrder = () => {
+            if (!cart.length) { alert('Cart empty'); return; }
+            if (!userProfile.name) { alert('Please save profile first.'); showPage('profilePage'); return; }
+            const sub = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+            const orderId = `ORD${Date.now()}`;
+            const newOrder = { id: orderId, date: new Date().toLocaleDateString('en-IN'), status: 0, items: [...cart], total: sub + (sub > 0 ? 30 : 0) };
+            database.ref('orders/' + orderId).set(newOrder).then(() => {
+                cart = []; localStorage.removeItem('cart');
+                updateCartCount(); showPage('ordersPage');
+            });
+        };
+
+        // --- Initial Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            document.querySelectorAll('.nav-item').forEach(i => i.addEventListener('click', e => { e.preventDefault(); showPage(i.dataset.page) }));
+            document.getElementById('shopLogo').addEventListener('click', () => showPage('shopDetailsPage'));
+        });
     </script>
 </body>
 </html>
