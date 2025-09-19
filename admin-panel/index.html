@@ -4,22 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Raman Vada Pav</title>
-    <!-- CSS and Fonts (No changes here) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* All your existing CSS goes here. No changes. */
-        :root { --primary: #e23744; /* ... and so on */ }
-        /* Paste ALL your existing CSS styles here */
+        :root{--primary:#e23744;--secondary:#ff9f43;--light:#f9f9f9;--dark:#333;--gray:#777;--success:#27ae60;--info:#2980b9;--danger:#c0392b;--bg-light:#f4f7f9;--border-color:#e8e8e8}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+        body{background-color:var(--bg-light);display:flex;height:100vh;overflow:hidden}
+        #login-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-light);display:flex;justify-content:center;align-items:center;z-index:1000}
+        .login-box{background:white;padding:40px;border-radius:12px;text-align:center;width:90%;max-width:360px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+        .login-box h3{color:var(--primary);font-size:1.8rem;margin-bottom:20px}
+        .login-box input{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:8px;margin-bottom:15px}
+        .btn{padding:12px 25px;border:none;border-radius:8px;cursor:pointer;color:white;font-weight:600;font-size:1rem;transition:all .2s ease}
+        .btn:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.1)}
+        .btn-primary{background-color:var(--primary)}
+        .sidebar{width:250px;background:white;display:flex;flex-direction:column;height:100vh;position:fixed;z-index:100;box-shadow:2px 0 10px rgba(0,0,0,.05);transition:transform .3s ease-in-out}
+        .main-container{flex-grow:1;margin-left:250px;display:none;flex-direction:column;height:100vh}
+        .main-header{background:white;padding:15px 25px;display:flex;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,.05);z-index:50}
+        #page-title{font-size:1.5rem;font-weight:600;color:var(--dark)}
+        .main-content{flex-grow:1;padding:25px;overflow-y:auto}
+        .page{display:none}.page.active{display:block}
+        .card{background:white;padding:25px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.03);margin-bottom:25px}
+        .card-header{font-size:1.3rem;font-weight:600;color:var(--dark);margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--border-color)}
+        .form-group{margin-bottom:20px}
+        .form-group label{display:block;margin-bottom:8px;font-weight:600}
+        .form-group input,.form-group textarea,.form-group select{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:8px;background:#fdfdfd}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+        .btn-success{background-color:var(--success)}.btn-secondary{background-color:var(--gray)}.btn-danger{background-color:var(--danger)}
     </style>
 </head>
 <body>
-    <!-- All your existing HTML Body content goes here. No changes. -->
-    <div id="login-overlay"><!-- ... login box html ... --></div>
-    <div id="mobile-menu-overlay" onclick="toggleMenu()"></div>
-    <aside class="sidebar" id="sidebar"><!-- ... sidebar html ... --></aside>
+    <div id="login-overlay"><div class="login-box"><h3>Admin Login</h3><div class="form-group"><input type="text" id="username" placeholder="Username" value="admin"></div><div class="form-group"><input type="password" id="password" placeholder="Password" value="password"></div><button class="btn btn-primary" onclick="handleLogin()">Login</button></div></div>
+    <aside class="sidebar" id="sidebar" style="display:none;"></aside>
     <div class="main-container">
-        <header class="main-header"><!-- ... header html ... --></header>
+        <header class="main-header"><h1 id="page-title">Dashboard</h1></header>
         <main class="main-content">
             <section id="dashboard" class="page active"></section>
             <section id="orders" class="page"></section>
@@ -28,93 +45,63 @@
         </main>
     </div>
 
-    <!-- ========= START: FIREBASE INTEGRATION ========= -->
-    
-    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    
+
     <script>
-      // 2. PASTE THE SAME FIREBASE CONFIG OBJECT HERE AGAIN
       const firebaseConfig = {
-        apiKey: "AIzaSyD1QEf2wmpnNH6JMeDQpKoExWlaJzM4VYs",
-    authDomain: "my-shope-raman.firebaseapp.com",
-    projectId: "my-shope-raman",
-    storageBucket: "my-shope-raman.firebasestorage.app",
-    messagingSenderId: "1058019322311",
-    appId: "1:1058019322311:web:240c7eeba4be628bc911e2"
-  };
-
-
-      // Initialize Firebase
+          apiKey: "AIzaSyD1QEf2wmpnNH6JMeDQpKoExWlaJzM4VYs",
+          authDomain: "my-shope-raman.firebaseapp.com",
+          databaseURL: "https://my-shope-raman-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "my-shope-raman",
+          storageBucket: "my-shope-raman.appspot.com",
+          messagingSenderId: "1058019322311",
+          appId: "1:1058019322311:web:240c7eeba4be628bc911e2"
+      };
+      
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
     </script>
-
-    <!-- ========= END: FIREBASE INTEGRATION ========= -->
     
-    <!-- ========= START: NEW JAVASCRIPT LOGIC ========= -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
-                initApp();
-            }
-        });
-
-        // --- Global Variables ---
-        let allMenuItems = [];
-        let allOrders = [];
-        let shopInfo = {};
-
-        // --- Auth & App Initialization ---
-        const handleLogin = () => { if (document.getElementById('username').value === 'admin' && document.getElementById('password').value === 'password') { sessionStorage.setItem('isAdminLoggedIn', 'true'); initApp(); } else { alert('Invalid credentials'); } };
-        const handleLogout = () => { sessionStorage.removeItem('isAdminLoggedIn'); location.reload(); };
+        let allMenuItems = [], allOrders = [], shopInfo = {};
+        
+        document.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('isAdminLoggedIn')==='true'){initApp()}});
+        const handleLogin=()=>{if(document.getElementById('username').value==='admin'&&document.getElementById('password').value==='password'){sessionStorage.setItem('isAdminLoggedIn','true');initApp()}else{alert('Invalid credentials')}};
+        const handleLogout=()=>{sessionStorage.removeItem('isAdminLoggedIn');location.reload()};
+        
         const initApp = () => {
-            document.getElementById('login-overlay').style.display = 'none';
-            document.querySelector('.sidebar').style.display = 'flex';
-            document.querySelector('.main-container').style.display = 'flex';
+            document.getElementById('login-overlay').style.display='none';
+            document.querySelector('.main-container').style.display='flex';
+            const sidebar = document.getElementById('sidebar');
+            sidebar.style.display='flex';
+            sidebar.innerHTML = `<div class="sidebar-header"><h2>Raman Vada Pav</h2></div><ul class="sidebar-nav"><li class="nav-item"><a href="#" data-page="dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li><li class="nav-item"><a href="#" data-page="orders"><i class="fas fa-receipt"></i> Orders</a></li><li class="nav-item"><a href="#" data-page="menu"><i class="fas fa-utensils"></i> Menu</a></li><li class="nav-item"><a href="#" data-page="shop"><i class="fas fa-store"></i> Shop Settings</a></li><li class="nav-item"><a href="#" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li></ul>`;
             setupFirebaseListeners();
             renderPageStructure();
-            document.querySelectorAll('.sidebar-nav a').forEach(link => { if (link.dataset.page) { link.addEventListener('click', (e) => { e.preventDefault(); showPage(link.dataset.page); }); } });
+            sidebar.querySelectorAll('.sidebar-nav a').forEach(link=>{if(link.dataset.page){link.addEventListener('click',e=>{e.preventDefault();showPage(link.dataset.page)})}});
         };
-        
-        // --- Firebase Listeners (This is where data is received in real-time) ---
-        function setupFirebaseListeners() {
-            database.ref('menuItems').on('value', snapshot => {
-                const data = snapshot.val();
-                allMenuItems = data ? Object.values(data).filter(item => item) : [];
-                if(document.getElementById('menu-list')) renderMenu();
-                if(document.getElementById('stats-container')) renderDashboard();
-            });
 
-            database.ref('orders').on('value', snapshot => {
-                const data = snapshot.val();
-                allOrders = data ? Object.values(data).sort((a, b) => b.id.localeCompare(a.id)) : [];
-                if(document.getElementById('new-order-list')) renderOrders();
-                if(document.getElementById('stats-container')) renderDashboard();
-            });
+        const setupFirebaseListeners = () => {
+            database.ref('menuItems').on('value',s=>{const d=s.val();allMenuItems=d?Object.values(d).filter(i=>i):[];if(document.getElementById('menu-list'))renderMenu();if(document.getElementById('dashboard'))renderDashboard()});
+            database.ref('orders').on('value',s=>{const d=s.val();allOrders=d?Object.values(d).sort((a,b)=>b.id.localeCompare(a.id)):[];if(document.getElementById('orders'))renderOrders();if(document.getElementById('dashboard'))renderDashboard()});
+            database.ref('shopInfo').on('value',s=>{shopInfo=s.val()||{};if(document.getElementById('shop'))renderShopSettingsPage()});
+        };
 
-            database.ref('shopInfo').on('value', snapshot => {
-                shopInfo = snapshot.val() || {};
-                if(document.getElementById('shop-info-form')) renderShopSettingsPage();
-            });
-        }
+        const showPage=pageId=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(pageId).classList.add('active');document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.toggle('active',a.dataset.page===pageId));document.getElementById('page-title').textContent=document.querySelector(`.sidebar-nav a[data-page="${pageId}"]`).textContent};
         
-        // --- Data Writing to Firebase ---
-        const updateOrderStatus = (id, status) => database.ref('orders/' + id + '/status').set(parseInt(status));
-        const saveMenuItem = (e) => { e.preventDefault(); const id=document.getElementById('menu-item-id').value; const itemId=id?parseInt(id):Date.now(); const itemData={id:itemId, name:document.getElementById('item-name').value, desc:document.getElementById('item-desc').value, price:parseFloat(document.getElementById('item-price').value), image:document.getElementById('item-image').value, available:document.getElementById('item-available').value==='true'}; database.ref('menuItems/'+itemId).set(itemData).then(()=>clearMenuForm()); };
-        const deleteMenuItem = (id) => { if(confirm('Sure?')) { database.ref('menuItems/'+id).remove(); }};
-        const saveShopInfo = (e) => { e.preventDefault(); const info={name:document.getElementById('shop-name').value, slogan:document.getElementById('shop-slogan').value, logoCircle:document.getElementById('shop-logo-circle').value, banner:document.getElementById('shop-banner').value, address:document.getElementById('shop-address').value, mapUrl:document.getElementById('shop-map-url').value}; database.ref('shopInfo').update(info).then(()=>alert('Shop info saved!')); };
-        const saveOpeningHours = () => { /* Logic to save hours to Firebase */ };
+        const renderPageStructure=()=>{document.getElementById('dashboard').innerHTML='<div class="stats-grid"></div>';document.getElementById('orders').innerHTML='<div class="card"><div class="card-header">New Orders</div><div id="new-order-list"></div></div><div class="card"><div class="card-header">Active & Past Orders</div><div id="active-order-list"></div></div>';document.getElementById('menu').innerHTML='<div class="card"><div class="card-header">Add/Edit Menu Item</div><form id="menu-item-form"></form></div><div class="card"><div class="card-header">Current Menu</div><div id="menu-list" class="stats-grid"></div></div>';document.getElementById('shop').innerHTML='<div class="card"><div class="card-header">Shop Information</div><form id="shop-info-form"></form></div>';renderDashboard();renderOrders();renderMenuPage();renderShopSettingsPage()};
+        const renderDashboard=()=>{const n=allOrders.filter(o=>o.status===0).length;const o=allMenuItems.filter(i=>!i.available).length;document.querySelector('#dashboard .stats-grid').innerHTML=`<div class="card"><h3>${n}</h3><p>New Orders</p></div><div class="card"><h3>${allMenuItems.length}</h3><p>Menu Items</p></div><div class="card"><h3>${o}</h3><p>Out of Stock</p></div>`};
+        const renderOrders=()=>{const s=["Placed","Accepted","Preparing","On its way","Delivered"];const n=allOrders.filter(o=>o.status===0);const p=allOrders.filter(o=>o.status>0);const c=o=>`<div class="card">#${o.id.slice(-6)}<div>${o.items.map(i=>`${i.quantity}x ${i.name}`).join(', ')}</div><select onchange="updateOrderStatus('${o.id}',this.value)">${s.map((t,i)=>`<option value="${i}" ${o.status===i?'selected':''}>${t}</option>`).join('')}</select></div>`;document.getElementById('new-order-list').innerHTML=n.length?n.map(c).join(''):'<p>No new orders.</p>';document.getElementById('active-order-list').innerHTML=p.length?p.map(c).join(''):'<p>No past orders.</p>'};
+        const renderMenuPage=()=>{document.getElementById('menu-item-form').innerHTML=`<input type="hidden" id="menu-item-id"><div class="form-group"><label>Name</label><input type="text" id="item-name" required></div><div class="form-group"><label>Description</label><input type="text" id="item-desc" required></div><div class="form-group"><label>Price</label><input type="number" id="item-price" required></div><div class="form-group"><label>Image URL</label><input type="url" id="item-image" required></div><div class="form-group"><label>Available</label><select id="item-available"><option value="true">Yes</option><option value="false">No</option></select></div><button type="submit" class="btn btn-success">Save</button><button type="button" class="btn btn-secondary" onclick="clearMenuForm()">Cancel</button>`;renderMenu();document.getElementById('menu-item-form').addEventListener('submit',saveMenuItem)};
+        const renderMenu=()=>{document.getElementById('menu-list').innerHTML=allMenuItems.map(i=>`<div class="card"><h4>${i.name}</h4><p>₹${i.price} - ${i.available?'In Stock':'Out of Stock'}</p><button onclick="editMenuItem(${i.id})">Edit</button><button onclick="deleteMenuItem(${i.id})">Delete</button></div>`).join('')};
+        const renderShopSettingsPage=()=>{document.getElementById('shop-info-form').innerHTML=`<div class="form-group"><label>Shop Name</label><input type="text" id="shop-name" value="${shopInfo.name||''}"></div><button type="submit" class="btn btn-primary">Save</button>`;document.getElementById('shop-info-form').addEventListener('submit',saveShopInfo)};
         
-        // --- All other UI and helper functions go here ---
-        // For simplicity, I am providing a compact version of the logic.
-        // Please replace the script in your admin panel with this.
-        const renderPageStructure = () => { /* Renders static HTML structure for pages */ };
-        const renderDashboard = () => { /* Renders dashboard stats using allOrders and allMenuItems */ };
-        const renderOrders = () => { /* Renders orders using allOrders */ };
-        const renderMenu = () => { /* Renders menu using allMenuItems */ };
+        const updateOrderStatus=(id,status)=>database.ref('orders/'+id+'/status').set(parseInt(status));
+        const saveMenuItem=e=>{e.preventDefault();const id=document.getElementById('menu-item-id').value;const itemId=id?parseInt(id):Date.now();const itemData={id:itemId,name:document.getElementById('item-name').value,desc:document.getElementById('item-desc').value,price:parseFloat(document.getElementById('item-price').value),image:document.getElementById('item-image').value,available:document.getElementById('item-available').value==='true'};database.ref('menuItems/'+itemId).set(itemData).then(()=>clearMenuForm())};
+        const deleteMenuItem=id=>{if(confirm('Sure?')){database.ref('menuItems/'+id).remove()}};
+        const clearMenuForm=()=>{document.getElementById('menu-item-form').reset();document.getElementById('menu-item-id').value=''};
+        const editMenuItem=id=>{const i=allMenuItems.find(x=>x.id===id);if(i){document.getElementById('menu-item-id').value=i.id;document.getElementById('item-name').value=i.name;document.getElementById('item-desc').value=i.desc;document.getElementById('item-price').value=i.price;document.getElementById('item-image').value=i.image;document.getElementById('item-available').value=i.available.toString()}};
+        const saveShopInfo=e=>{e.preventDefault();const info={name:document.getElementById('shop-name').value};database.ref('shopInfo').update(info).then(()=>alert('Shop info saved!'))};
     </script>
-    <!-- ========= END: NEW JAVASCRIPT LOGIC ========= -->
 </body>
 </html>
