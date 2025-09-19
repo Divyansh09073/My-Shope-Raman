@@ -340,5 +340,26 @@
         const toggleDay = (d, c) => { document.getElementById(`${d}-open`).disabled = c; document.getElementById(`${d}-close`).disabled = c };
 
     </script>
+    <!-- Firebase की पुरानी, पर आसान वाली लाइब्रेरी -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+  // आपका कॉन्फ़िगरेशन कोड (यह बदला नहीं है)
+  const firebaseConfig = {
+    apiKey: "AIzaSyD1QEf2wmpnNH6JMeDQpKoExWlaJzM4VYs",
+    authDomain: "my-shope-raman.firebaseapp.com",
+    // databaseURL को मैन्युअल रूप से जोड़ना होगा
+    databaseURL: "https://my-shope-raman-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "my-shope-raman",
+    storageBucket: "my-shope-raman.appspot.com",
+    messagingSenderId: "1058019322311",
+    appId: "1:1058019322311:web:240c7eeba4be628bc911e2"
+  };
+
+  // Firebase को शुरू करना
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+</script>
 </body>
 </html>
